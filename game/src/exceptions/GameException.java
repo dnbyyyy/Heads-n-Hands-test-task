@@ -29,4 +29,16 @@ public class GameException extends Exception{
     public static GameException InvalidCreatureNameException() {
         return new GameException("Name should start with capital letter and contain letters only");
     }
+
+    public static GameException MaxHealImpossibleException() {
+        return new GameException("Heal impossible: player has max health already");
+    }
+
+    public static GameException HealingLimitReachedException() {
+        return new GameException("You can heal only 4 times");
+    }
+
+    public static GameException InvalidDicesAmountException() {
+        return new GameException("At least one dice must be rolled");
+    }
 }
