@@ -3,18 +3,18 @@ package entities;
 import exceptions.GameException;
 
 public abstract class Creature {
-    private final String name;
-    private int health;
-    private final int attack;
-    private final int defense;
-    private final int lowerDamageBorder;
-    private final int higherDamageBorder;
-    private boolean isAlive;
-
-    private final String nameRegex = "^[A-Z](?=.{1,29}$)[A-Za-z]*(?:\\h+[A-Z][A-Za-z]*)*$";
+    protected final String name;
+    protected final int maxHealth;
+    protected final int attack;
+    protected final int defense;
+    protected final int lowerDamageBorder;
+    protected final int higherDamageBorder;
+    protected int currentHealth;
+    protected boolean isAlive;
 
 
     public Creature(String name, int maxHealth, int attack, int defense, int lowerDamageBorder, int higherDamageBorder) throws GameException {
+        String nameRegex = "^[A-Z](?=.{1,29}$)[A-Za-z]*(?:\\h+[A-Z][A-Za-z]*)*$";
         if (!name.matches(nameRegex)) throw GameException.InvalidCreatureNameException();
         if (attack > 30 || attack < 0) throw GameException.InvalidAttackParamException(attack);
         if (defense > 30 || defense < 0) throw GameException.InvalidDefenseParamException(defense);
@@ -23,7 +23,8 @@ public abstract class Creature {
         if (higherDamageBorder < 0 || higherDamageBorder < lowerDamageBorder) throw GameException.InvalidHigherDamageBorderParamException();
 
         this.name = name;
-        this.health = maxHealth;
+        this.maxHealth = maxHealth;
+        this.currentHealth = maxHealth;
         this.attack = attack;
         this.defense = defense;
         this.lowerDamageBorder = lowerDamageBorder;
@@ -36,7 +37,11 @@ public abstract class Creature {
     }
 
     public int getHealth() {
-        return health;
+        return currentHealth;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
     }
 
     public int getDefense() {
@@ -51,14 +56,22 @@ public abstract class Creature {
         return higherDamageBorder;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
     public void takeDamage(int damageTaken) {
-        int currentHealth = this.health - damageTaken;
+        int currentHealth = this.currentHealth - damageTaken;
         if (currentHealth <= 0) {
             isAlive = false;
-            System.out.printf("%s died%n", name);
+            System.out.printf("%s is dead%n", name);
         }
         else {
-            this.health = currentHealth;
+            this.currentHealth = currentHealth;
             System.out.printf("Damage taken. Current health: %d%n", currentHealth);
         }
     }
